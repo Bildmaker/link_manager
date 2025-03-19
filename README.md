@@ -27,5 +27,4 @@ git clone https://github.com/Bildmaker/Link-Manager.git
 ```
 
 ## 📸 Screenshot  
-Make sure to include a screenshot named `screenshot.png` in the root of the repository to display it here:  
 ![Link Manager Screenshot](./screenshot.png)  
