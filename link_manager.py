@@ -59,6 +59,12 @@ class LinkOpenerApp(QMainWindow):
         # Load saved configuration
         self.load_config()
 
+        # Load links on startup
+        if self.folder1:
+            self.import_links(self.layout1, self.layout1.label, startup=True)
+        if self.folder2:
+            self.import_links(self.layout2, self.layout2.label, startup=True)
+
     def initUI(self):
         """Initialize the main user interface."""
         main_layout = QHBoxLayout()
@@ -120,9 +126,14 @@ class LinkOpenerApp(QMainWindow):
 
         return layout
 
-    def import_links(self, layout, label):
+    def import_links(self, layout, label, startup=False):
         """Import links from .url files in the selected folder."""
-        folder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        if startup:
+            folder = self.folder1 if layout == self.layout1 else self.folder2
+        else:
+            default_folder = self.folder1 if layout == self.layout1 else self.folder2
+            folder = QFileDialog.getExistingDirectory(self, "Select Folder", default_folder)
+
         if folder:
             links = []
             for file in os.listdir(folder):
@@ -181,11 +192,7 @@ class LinkOpenerApp(QMainWindow):
 
     def open_all_links(self, link_list):
         """Open all links in the list."""
-        if link_list == self.layout1.link_list:
-            links = self.links1
-        else:
-            links = self.links2
-
+        links = self.links1 if link_list == self.layout1.link_list else self.links2
         for link in links:
             webbrowser.open(link)
 
@@ -211,7 +218,6 @@ class LinkOpenerApp(QMainWindow):
             json.dump(config, file, indent=4)
 
     def closeEvent(self, event):
-        """Save configuration on close."""
         self.save_config()
         event.accept()
 
